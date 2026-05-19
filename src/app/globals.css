@@ -1,0 +1,330 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════
+   FitGenie AI — Design System
+   ═══════════════════════════════════════════ */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-energy: var(--energy);
+  --color-energy-light: var(--energy-light);
+  --color-danger: var(--danger);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border-color);
+  --color-muted: var(--muted);
+  --color-card: var(--card-bg);
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ─── Light Mode ────────────────────────── */
+:root {
+  --background: #f0f4f8;
+  --foreground: #1e293b;
+  --primary: #10b981;
+  --primary-light: #34d399;
+  --accent: #6366f1;
+  --accent-light: #818cf8;
+  --energy: #f59e0b;
+  --energy-light: #fbbf24;
+  --danger: #ef4444;
+  --surface: rgba(255, 255, 255, 0.75);
+  --surface-hover: rgba(255, 255, 255, 0.9);
+  --border-color: rgba(148, 163, 184, 0.25);
+  --muted: #64748b;
+  --card-bg: rgba(255, 255, 255, 0.6);
+  --glass-blur: 16px;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+}
+
+/* ─── Dark Mode ─────────────────────────── */
+.dark {
+  --background: #0c1222;
+  --foreground: #e2e8f0;
+  --primary: #34d399;
+  --primary-light: #6ee7b7;
+  --accent: #818cf8;
+  --accent-light: #a5b4fc;
+  --energy: #fbbf24;
+  --energy-light: #fcd34d;
+  --danger: #f87171;
+  --surface: rgba(30, 41, 59, 0.65);
+  --surface-hover: rgba(30, 41, 59, 0.85);
+  --border-color: rgba(148, 163, 184, 0.15);
+  --muted: #94a3b8;
+  --card-bg: rgba(30, 41, 59, 0.5);
+  --glass-blur: 20px;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* ─── Base Styles ───────────────────────── */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+.dark body {
+  background: linear-gradient(135deg, #0c1222 0%, #1a1a2e 50%, #0c1222 100%);
+}
+
+/* ─── Glassmorphism Card ────────────────── */
+.glass {
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px var(--shadow-color);
+}
+
+.glass-strong {
+  background: var(--surface);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px var(--shadow-color);
+}
+
+/* ─── Gradient Utilities ────────────────── */
+.gradient-primary {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+}
+
+.gradient-energy {
+  background: linear-gradient(135deg, var(--energy), #ef4444);
+}
+
+.gradient-cool {
+  background: linear-gradient(135deg, var(--accent), #06b6d4);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-energy {
+  background: linear-gradient(135deg, var(--energy), #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Animations ────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.6); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bounce-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+.animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+.animate-slide-left { animation: slideInLeft 0.5s ease-out forwards; }
+.animate-slide-right { animation: slideInRight 0.5s ease-out forwards; }
+.animate-scale-in { animation: scaleIn 0.4s ease-out forwards; }
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+.animate-spin-slow { animation: spin-slow 8s linear infinite; }
+.animate-bounce-soft { animation: bounce-soft 2s ease-in-out infinite; }
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
+}
+
+/* Staggered animation delays */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+
+/* ─── Custom Scrollbar ──────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* ─── Focus States ──────────────────────── */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─── Selection ─────────────────────────── */
+::selection {
+  background: var(--primary);
+  color: white;
+}
+
+/* ─── Number Input Spinners ─────────────── */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ─── Transition Utilities ──────────────── */
+.transition-all-smooth {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Background Patterns ───────────────── */
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.bg-dots-pattern {
+  background-image: radial-gradient(rgba(148, 163, 184, 0.15) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ─── Chat Bubbles ──────────────────────── */
+.chat-bubble-user {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  border-radius: 18px 18px 4px 18px;
+}
+
+.chat-bubble-ai {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: 18px 18px 18px 4px;
+}
+
+/* ─── BMI Gauge ─────────────────────────── */
+.bmi-gauge {
+  background: conic-gradient(
+    #3b82f6 0deg 72deg,
+    #10b981 72deg 180deg,
+    #f59e0b 180deg 270deg,
+    #ef4444 270deg 360deg
+  );
+  border-radius: 50%;
+}
+
+/* ─── Progress Ring ─────────────────────── */
+.progress-ring circle {
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Recharts Overrides ────────────────── */
+.recharts-default-tooltip {
+  background: var(--surface) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 16px var(--shadow-color) !important;
+}
+
+.recharts-tooltip-label {
+  color: var(--foreground) !important;
+  font-weight: 600 !important;
+}
+
+/* ─── Water Glass Animation ─────────────── */
+.water-fill {
+  transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Responsive utilities ──────────────── */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
