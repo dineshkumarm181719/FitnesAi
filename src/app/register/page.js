@@ -5,21 +5,83 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Mail, Lock, User, Sparkles, ArrowRight, Ruler, Weight } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase';
+import { useUser } from '@/context/UserContext';
+
+async function saveUserProfileToFirestore(userId, userData) {
+  try {
+    await setDoc(doc(db, 'users', userId), userData);
+    return true;
+  } catch (writeError) {
+    console.warn('Firestore user save skipped due to permissions or connectivity:', writeError);
+    return false;
+  }
+}
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { updateUser } = useUser();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [form, setForm] = useState({ name: '', email: '', password: '', height: '', weight: '', goal: 'maintenance' });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1000));
-    const user = { name: form.name, email: form.email, height: Number(form.height), weight: Number(form.weight), goal: form.goal, age: 25, gender: 'male', dietaryPreference: 'non-veg', fitnessLevel: 'intermediate' };
-    localStorage.setItem('fitgenie-user', JSON.stringify(user));
-    localStorage.setItem('fitgenie-auth', 'true');
-    router.push('/dashboard');
+    setError('');
+    
+    try {
+      // Create Firebase user
+      const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
+      const user = userCredential.user;
+
+      const userData = {
+        uid: user.uid,
+        name: form.name,
+        email: form.email,
+        height: Number(form.height),
+        weight: Number(form.weight),
+        goal: form.goal,
+        age: 25,
+        gender: 'male',
+        dietaryPreference: 'non-veg',
+        fitnessLevel: 'intermediate',
+        createdAt: new Date().toISOString(),
+      };
+
+      // Set display name in Firebase Auth profile
+      try {
+        await updateProfile(user, { displayName: form.name });
+      } catch (profileError) {
+        console.warn('Unable to update auth profile:', profileError);
+      }
+
+      // Save user data to Firestore when rules allow; otherwise continue with local-only profile storage.
+      const firestoreSaved = await saveUserProfileToFirestore(user.uid, userData);
+      if (!firestoreSaved) {
+        console.info('Firestore sync unavailable; profile saved locally.');
+      }
+
+      // Store in localStorage and update the app user context.
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('fitgenie-user', JSON.stringify(userData));
+        localStorage.setItem('fitgenie-auth', 'true');
+      }
+      updateUser(userData);
+      router.push('/dashboard');
+    } catch (err) {
+      setError(err.message || 'Failed to create account');
+      setLoading(false);
+    }
   };
+
+  // Log Firebase configuration
+  if (typeof window !== 'undefined') {
+    console.log('Register page loaded');
+    console.log('Auth object:', auth);
+  }
 
   const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
 
@@ -43,6 +105,7 @@ export default function RegisterPage() {
             <h1 className="text-2xl font-bold mb-2">Create Account</h1>
             <p className="text-sm text-muted">Start your fitness transformation today</p>
           </div>
+          {error && <div className="bg-red-500/10 border border-red-500/50 text-red-500 text-sm p-3 rounded-lg mb-4">{error}</div>}
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input id="reg-name" label="Full Name" placeholder="Alex Johnson" icon={User} value={form.name} onChange={set('name')} required />
             <Input id="reg-email" label="Email" type="email" placeholder="alex@fitgenie.ai" icon={Mail} value={form.email} onChange={set('email')} required />

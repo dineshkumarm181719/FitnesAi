@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Utensils, Sparkles, Clock, Flame } from 'lucide-react';
 import { Card, Button, Badge } from '@/components/ui';
-import { FITNESS_GOALS, DIETARY_PREFERENCES, DEMO_MEAL_PLAN } from '@/lib/constants';
+import { FITNESS_GOALS, DIETARY_PREFERENCES, generateMockMealPlan } from '@/lib/constants';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 export default function DietPage() {
@@ -18,9 +18,9 @@ export default function DietPage() {
       const res = await fetch('/api/ai/diet', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ goal, diet, weight: 78, height: 175, age: 28 }) });
       const data = await res.json();
       if (data.plan) setPlan(data.plan);
-      else setPlan(DEMO_MEAL_PLAN);
+      else setPlan(generateMockMealPlan(goal, diet));
     } catch {
-      setPlan(DEMO_MEAL_PLAN);
+      setPlan(generateMockMealPlan(goal, diet));
     }
     setLoading(false);
   };

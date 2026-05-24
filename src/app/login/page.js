@@ -5,18 +5,63 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Mail, Lock, Sparkles, ArrowRight } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { getDoc, doc } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase';
+import { useUser } from '@/context/UserContext';
+
+async function loadUserProfileFromFirestore(userId) {
+  try {
+    const userDoc = await getDoc(doc(db, 'users', userId));
+    if (userDoc.exists()) {
+      return userDoc.data();
+    }
+    return null;
+  } catch (fetchError) {
+    console.warn('Firestore user load skipped due to permissions or connectivity:', fetchError);
+    return null;
+  }
+}
 
 export default function LoginPage() {
   const router = useRouter();
+  const { updateUser } = useUser();
   const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1000));
-    localStorage.setItem('fitgenie-auth', 'true');
-    router.push('/dashboard');
+    setError('');
+    
+    try {
+      // Sign in with Firebase
+      const userCredential = await signInWithEmailAndPassword(auth, form.email, form.password);
+      const user = userCredential.user;
+
+      // Fetch user data from Firestore if available, otherwise fall back to auth profile.
+      let localUser = {
+        uid: user.uid,
+        email: user.email,
+        name: user.displayName || '',
+      };
+
+      const firestoreUser = await loadUserProfileFromFirestore(user.uid);
+      if (firestoreUser) {
+        localUser = firestoreUser;
+      }
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('fitgenie-user', JSON.stringify(localUser));
+        localStorage.setItem('fitgenie-auth', 'true');
+      }
+      updateUser(localUser);
+      router.push('/dashboard');
+    } catch (err) {
+      setError(err.message || 'Failed to sign in');
+      setLoading(false);
+    }
   };
 
   return (
@@ -39,6 +84,7 @@ export default function LoginPage() {
             <h1 className="text-2xl font-bold mb-2">Welcome Back</h1>
             <p className="text-sm text-muted">Sign in to continue your fitness journey</p>
           </div>
+          {error && <div className="bg-red-500/10 border border-red-500/50 text-red-500 text-sm p-3 rounded-lg mb-4">{error}</div>}
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input id="login-email" label="Email" type="email" placeholder="alex@fitgenie.ai" icon={Mail} value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} required />
             <Input id="login-password" label="Password" type="password" placeholder="••••••••" icon={Lock} value={form.password} onChange={(e) => setForm({...form, password: e.target.value})} required />
@@ -49,7 +95,6 @@ export default function LoginPage() {
             <Link href="/register" className="text-primary font-semibold hover:underline">Sign Up</Link>
           </div>
         </div>
-        <p className="text-center text-xs text-muted mt-6">Demo: Enter any email &amp; password</p>
       </div>
     </div>
   );

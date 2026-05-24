@@ -40,6 +40,7 @@ export const NAV_ITEMS = [
   { href: '/dashboard/diet', label: 'Diet Planner', icon: 'Utensils' },
   { href: '/dashboard/workout', label: 'Workout Planner', icon: 'Dumbbell' },
   { href: '/dashboard/progress', label: 'Progress', icon: 'TrendingUp' },
+  { href: '/dashboard/trackers', label: 'Health Trackers', icon: 'Droplets' },
   { href: '/dashboard/chat', label: 'AI Chat', icon: 'MessageCircle' },
 ];
 
@@ -176,4 +177,99 @@ export const DEMO_WORKOUT_PLAN = {
     { name: 'Tricep Dips', sets: 3, reps: '12-15', rest: '45s', muscle: 'Triceps', icon: '💪' },
     { name: 'Plank Hold', sets: 3, reps: '45-60s', rest: '30s', muscle: 'Core', icon: '🧘' },
   ],
+};
+
+export const generateMockMealPlan = (goal, diet) => {
+  const isWeightLoss = goal === 'weight-loss';
+  const isMuscleGain = goal === 'muscle-gain';
+  const calories = isWeightLoss ? 1800 : isMuscleGain ? 2800 : 2200;
+  
+  const protein = isMuscleGain ? 180 : isWeightLoss ? 140 : 120;
+  const carbs = isWeightLoss ? 150 : isMuscleGain ? 300 : 220;
+  const fats = isWeightLoss ? 60 : 80;
+
+  const getSource = (type) => {
+    if (diet === 'vegan') return type === 'protein' ? 'Tofu/Tempeh' : 'Plant-based';
+    if (diet === 'veg') return type === 'protein' ? 'Paneer/Lentils' : 'Dairy';
+    return type === 'protein' ? 'Chicken/Fish' : 'Mixed';
+  };
+
+  const pSource = getSource('protein');
+
+  return {
+    calories, protein, carbs, fats,
+    meals: [
+      {
+        type: 'Breakfast', time: '8:00 AM',
+        name: `${diet === 'vegan' ? 'Oatmeal & Plant Protein' : 'Eggs & Oatmeal'}`,
+        calories: Math.round(calories * 0.25),
+        protein: Math.round(protein * 0.25),
+        carbs: Math.round(carbs * 0.3),
+        fats: Math.round(fats * 0.2),
+        items: ['Oats', diet === 'vegan' ? 'Plant Protein' : 'Eggs', 'Berries']
+      },
+      {
+        type: 'Lunch', time: '1:00 PM',
+        name: `${pSource} Power Bowl`,
+        calories: Math.round(calories * 0.35),
+        protein: Math.round(protein * 0.35),
+        carbs: Math.round(carbs * 0.4),
+        fats: Math.round(fats * 0.4),
+        items: [pSource, 'Brown Rice', 'Mixed Veggies']
+      },
+      {
+        type: 'Dinner', time: '7:00 PM',
+        name: `Grilled ${pSource} & Greens`,
+        calories: Math.round(calories * 0.3),
+        protein: Math.round(protein * 0.3),
+        carbs: Math.round(carbs * 0.2),
+        fats: Math.round(fats * 0.3),
+        items: [pSource, 'Sweet Potato', 'Broccoli', 'Olive Oil']
+      },
+      {
+        type: 'Snack', time: '4:00 PM',
+        name: `${diet === 'vegan' ? 'Nuts & Seeds' : 'Greek Yogurt & Almonds'}`,
+        calories: Math.round(calories * 0.1),
+        protein: Math.round(protein * 0.1),
+        carbs: Math.round(carbs * 0.1),
+        fats: Math.round(fats * 0.1),
+        items: [diet === 'vegan' ? 'Mixed Nuts' : 'Greek Yogurt', 'Almonds']
+      }
+    ]
+  };
+};
+
+export const generateMockWorkoutPlan = (goal, level, duration) => {
+  const isWeightLoss = goal === 'weight-loss';
+  const isBeginner = level === 'beginner';
+  
+  const reps = isWeightLoss ? '12-15' : '8-10';
+  const sets = isBeginner ? 3 : 4;
+  const rest = isWeightLoss ? '45s' : '90s';
+
+  const exercises = isWeightLoss ? [
+    { name: 'Jump Squats', sets, reps, rest, muscle: 'Legs', icon: '🦵' },
+    { name: 'Burpees', sets, reps, rest, muscle: 'Full Body', icon: '🔥' },
+    { name: 'Mountain Climbers', sets, reps, rest, muscle: 'Core', icon: '🏃' },
+    { name: 'Kettlebell Swings', sets, reps, rest, muscle: 'Full Body', icon: '💪' },
+    { name: 'Plank', sets: 3, reps: '60s', rest: '30s', muscle: 'Core', icon: '🧘' },
+    { name: 'High Knees', sets, reps, rest, muscle: 'Cardio', icon: '🏃' },
+  ] : [
+    { name: 'Barbell Squats', sets, reps, rest, muscle: 'Legs', icon: '🦵' },
+    { name: 'Bench Press', sets, reps, rest, muscle: 'Chest', icon: '🏋️' },
+    { name: 'Deadlifts', sets, reps, rest, muscle: 'Back', icon: '💪' },
+    { name: 'Overhead Press', sets, reps, rest, muscle: 'Shoulders', icon: '🙆' },
+    { name: 'Barbell Rows', sets, reps, rest, muscle: 'Back', icon: '💪' },
+    { name: 'Bicep Curls', sets, reps, rest, muscle: 'Arms', icon: '💪' },
+  ];
+
+  const numExercises = Math.min(exercises.length, Math.max(3, Math.floor(parseInt(duration) / 10)));
+
+  return {
+    name: `${level.charAt(0).toUpperCase() + level.slice(1)} ${goal.replace('-', ' ')} Routine`,
+    duration: `${duration} min`,
+    difficulty: level.charAt(0).toUpperCase() + level.slice(1),
+    caloriesBurned: isWeightLoss ? parseInt(duration) * 9 : parseInt(duration) * 6,
+    exercises: exercises.slice(0, numExercises)
+  };
 };

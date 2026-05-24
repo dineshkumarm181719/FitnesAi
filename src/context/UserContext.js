@@ -16,18 +16,26 @@ const DEFAULT_FITNESS = {
 };
 
 export function UserProvider({ children }) {
-  const [user, setUser] = useState(DEMO_USER);
+  const [user, setUser] = useState(null);
   const [fitnessData, setFitnessData] = useState(DEFAULT_FITNESS);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('fitgenie-user');
     const savedFitness = localStorage.getItem('fitgenie-fitness');
-    if (savedUser) setUser(JSON.parse(savedUser));
-    if (savedFitness) setFitnessData(JSON.parse(savedFitness));
+
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+    if (savedFitness) {
+      setFitnessData(JSON.parse(savedFitness));
+    }
+
+    setIsLoaded(true);
   }, []);
 
   const updateUser = (data) => {
-    const updated = { ...user, ...data };
+    const updated = { ...(user ?? {}), ...data };
     setUser(updated);
     localStorage.setItem('fitgenie-user', JSON.stringify(updated));
   };
@@ -38,8 +46,15 @@ export function UserProvider({ children }) {
     localStorage.setItem('fitgenie-fitness', JSON.stringify(updated));
   };
 
+  const logout = () => {
+    localStorage.removeItem('fitgenie-user');
+    localStorage.removeItem('fitgenie-fitness');
+    setUser(null);
+    setFitnessData(DEFAULT_FITNESS);
+  };
+
   return (
-    <UserContext.Provider value={{ user, updateUser, fitnessData, updateFitnessData }}>
+    <UserContext.Provider value={{ user, updateUser, fitnessData, updateFitnessData, logout, isLoaded }}>
       {children}
     </UserContext.Provider>
   );
@@ -48,7 +63,7 @@ export function UserProvider({ children }) {
 export function useUser() {
   const ctx = useContext(UserContext);
   if (ctx === undefined) {
-    return { user: DEMO_USER, updateUser: () => {}, fitnessData: DEFAULT_FITNESS, updateFitnessData: () => {} };
+    return { user: null, updateUser: () => {}, fitnessData: DEFAULT_FITNESS, updateFitnessData: () => {}, logout: () => {}, isLoaded: true };
   }
   return ctx;
 }

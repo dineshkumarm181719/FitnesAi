@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Calculator, Utensils, Dumbbell, TrendingUp, MessageCircle, Settings, User, X, Sparkles } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { LayoutDashboard, Calculator, Utensils, Dumbbell, TrendingUp, MessageCircle, Settings, User, X, Sparkles, LogOut, Droplets } from 'lucide-react';
 import { NAV_ITEMS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
+import { useUser } from '@/context/UserContext';
 
 const iconMap = {
   LayoutDashboard,
@@ -13,10 +14,14 @@ const iconMap = {
   Dumbbell,
   TrendingUp,
   MessageCircle,
+  Droplets,
 };
 
 export default function Sidebar({ open, onClose }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, logout } = useUser();
+  const initials = user?.name ? user.name.split(' ').map(n => n[0]).join('').slice(0, 2) : 'AJ';
 
   return (
     <>
@@ -92,20 +97,31 @@ export default function Sidebar({ open, onClose }) {
             <Settings size={20} />
             <span>Settings</span>
           </Link>
+          <button
+            onClick={() => {
+              logout();
+              if (onClose) onClose();
+              router.push('/login');
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-danger hover:bg-danger/10 transition-all cursor-pointer"
+          >
+            <LogOut size={20} />
+            <span>Log Out</span>
+          </button>
         </div>
 
         {/* User card */}
-        <div className="p-4 border-t border-border">
+        <Link href="/dashboard/profile" onClick={onClose} className="p-4 border-t border-border block hover:bg-surface/50 transition-colors cursor-pointer">
           <div className="flex items-center gap-3 p-3 rounded-xl bg-surface">
             <div className="w-10 h-10 rounded-full gradient-cool flex items-center justify-center text-white font-bold text-sm">
-              AJ
+              {initials}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold truncate">Alex Johnson</p>
-              <p className="text-xs text-muted truncate">alex@fitgenie.ai</p>
+              <p className="text-sm font-semibold truncate">{user?.name || 'User'}</p>
+              <p className="text-xs text-muted truncate">{user?.email}</p>
             </div>
           </div>
-        </div>
+        </Link>
       </aside>
     </>
   );

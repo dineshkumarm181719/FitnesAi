@@ -14,18 +14,7 @@ const features = [
   { icon: Droplets, title: 'Health Trackers', desc: 'Track water intake, steps, sleep quality, and set daily reminders.', color: 'from-sky-500 to-blue-500' },
 ];
 
-const stats = [
-  { value: '50K+', label: 'Active Users' },
-  { value: '2M+', label: 'Workouts Done' },
-  { value: '98%', label: 'Satisfaction' },
-  { value: '24/7', label: 'AI Support' },
-];
 
-const testimonials = [
-  { name: 'Sarah M.', role: 'Lost 12kg in 4 months', text: 'FitGenie completely transformed my approach to fitness. The AI meal plans are incredibly accurate and delicious!', rating: 5 },
-  { name: 'James R.', role: 'Gained 8kg muscle', text: 'The workout planner adapts perfectly to my schedule. I\'ve never been this consistent with training before.', rating: 5 },
-  { name: 'Priya K.', role: 'Marathon runner', text: 'The AI chatbot is like having a personal trainer in my pocket. Best fitness app I\'ve ever used!', rating: 5 },
-];
 
 export default function LandingPage() {
   return (
@@ -42,7 +31,7 @@ export default function LandingPage() {
 
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-sm text-muted hover:text-foreground transition-colors">Features</a>
-            <a href="#testimonials" className="text-sm text-muted hover:text-foreground transition-colors">Testimonials</a>
+
             <a href="#pricing" className="text-sm text-muted hover:text-foreground transition-colors">Pricing</a>
           </div>
 
@@ -99,15 +88,7 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto animate-fade-in-up delay-4">
-            {stats.map((stat, i) => (
-              <div key={i} className="glass p-4 text-center">
-                <p className="text-2xl sm:text-3xl font-black gradient-text">{stat.value}</p>
-                <p className="text-xs text-muted mt-1">{stat.label}</p>
-              </div>
-            ))}
-          </div>
+
         </div>
       </section>
 
@@ -143,40 +124,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ TESTIMONIALS ═══ */}
-      <section id="testimonials" className="py-20 px-4 sm:px-6 lg:px-8 bg-dots-pattern">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-energy/20 mb-4">
-              <Heart size={14} className="text-energy" />
-              <span className="text-sm font-medium text-energy">Loved by Thousands</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-black mb-4">Real Results, <span className="gradient-text-energy">Real Stories</span></h2>
-          </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
-              <div key={i} className="glass p-8 hover:border-energy/20 transition-all duration-500 hover:-translate-y-1">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(t.rating)].map((_, j) => (
-                    <Star key={j} size={16} className="fill-energy text-energy" />
-                  ))}
-                </div>
-                <p className="text-sm text-muted mb-6 leading-relaxed italic">&ldquo;{t.text}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center text-white font-bold text-sm">
-                    {t.name.split(' ').map(n => n[0]).join('')}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm">{t.name}</p>
-                    <p className="text-xs text-primary">{t.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ═══ PRICING ═══ */}
       <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8">

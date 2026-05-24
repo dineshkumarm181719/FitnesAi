@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Dumbbell, Sparkles, Clock, Flame, RotateCcw, Target } from 'lucide-react';
 import { Card, Button, Badge } from '@/components/ui';
-import { FITNESS_GOALS, FITNESS_LEVELS, WORKOUT_DURATIONS, DEMO_WORKOUT_PLAN } from '@/lib/constants';
+import { FITNESS_GOALS, FITNESS_LEVELS, WORKOUT_DURATIONS, generateMockWorkoutPlan } from '@/lib/constants';
 
 export default function WorkoutPage() {
   const [goal, setGoal] = useState('muscle-gain');
@@ -18,9 +18,9 @@ export default function WorkoutPage() {
       const res = await fetch('/api/ai/workout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ goal, level, duration }) });
       const data = await res.json();
       if (data.plan) setPlan(data.plan);
-      else setPlan(DEMO_WORKOUT_PLAN);
+      else setPlan(generateMockWorkoutPlan(goal, level, duration));
     } catch {
-      setPlan(DEMO_WORKOUT_PLAN);
+      setPlan(generateMockWorkoutPlan(goal, level, duration));
     }
     setLoading(false);
   };
